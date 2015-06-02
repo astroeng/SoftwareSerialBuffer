@@ -1,11 +1,12 @@
 #include <software_serial_buffer.h>
 
-
 SoftwareSerialBuffer::SoftwareSerialBuffer(unsigned int size)
 {
   buffer        = new unsigned char[size];
   bufferPointer = 0;
   bufferNext    = 0;
+  bufferSize = size;
+
   int i = 0;
   
   for (i = 0; i < bufferSize; i++)
@@ -31,7 +32,13 @@ unsigned int SoftwareSerialBuffer::hasSpace()
 
 void SoftwareSerialBuffer::purge(unsigned int bytes)
 {
-  bufferPointer+=bytes;
+  int i = 0;
+  for (i = 0; i < bufferSize; i++)
+  {
+    buffer[i] = 0;
+  }
+  bufferPointer = 0;
+  bufferNext    = 0;
 }
 
 unsigned char SoftwareSerialBuffer::read()
