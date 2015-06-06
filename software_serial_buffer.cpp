@@ -1,18 +1,14 @@
 #include <software_serial_buffer.h>
+#include <Arduino.h>
 
 SoftwareSerialBuffer::SoftwareSerialBuffer(unsigned int size)
 {
   buffer        = new unsigned char[size];
   bufferPointer = 0;
   bufferNext    = 0;
-  bufferSize = size;
+  bufferSize    = size;
 
-  int i = 0;
-  
-  for (i = 0; i < bufferSize; i++)
-  {
-    buffer[i] = 0;
-  }
+  memset(buffer,0,sizeof(unsigned char)*bufferSize);
 }
 
 SoftwareSerialBuffer::~SoftwareSerialBuffer()
@@ -30,17 +26,21 @@ unsigned int SoftwareSerialBuffer::hasSpace()
   return bufferSize - bufferNext;
 }
 
+/* Ideally this function would purge the number of bytes passed.
+ * Eventually the Serial Buffer will be a ring buffer.
+ */
 void SoftwareSerialBuffer::purge(unsigned int bytes)
 {
-  int i = 0;
-  for (i = 0; i < bufferSize; i++)
-  {
-    buffer[i] = 0;
-  }
+  memset(buffer,0,sizeof(unsigned char)*bufferSize);
+  
   bufferPointer = 0;
   bufferNext    = 0;
 }
 
+/* This will return the current byte of the buffer and advance
+ * the pointer to the next byte.
+ * Eventually this will need to implement ring buffer logic.
+ */
 unsigned char SoftwareSerialBuffer::read()
 {
   if (bufferPointer < bufferSize)
@@ -51,7 +51,9 @@ unsigned char SoftwareSerialBuffer::read()
   return 0;
 }
 
-
+/* This will save a single value to the buffer.
+ * Eventually this will need to implement ring buffer logic.
+ */
 void SoftwareSerialBuffer::save(unsigned char value)
 {
   if (bufferNext < bufferSize)
@@ -61,8 +63,12 @@ void SoftwareSerialBuffer::save(unsigned char value)
   }
 }
 
+/* Reset the buffer. 
+ */
 void SoftwareSerialBuffer::resetBuffer()
 {
+  memset(buffer,0,sizeof(unsigned char)*bufferSize);
+  
   bufferPointer = 0;
   bufferNext    = 0;
 }

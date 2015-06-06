@@ -6,6 +6,7 @@ class SoftwareSerialBuffer
 public:
   SoftwareSerialBuffer(unsigned int size);
   ~SoftwareSerialBuffer();
+  
   unsigned int hasSpace();
   unsigned int usedSpace();
   void purge(unsigned int bytes);
